@@ -6,15 +6,39 @@ import re
 def decode(doc_url):
     #Send get request to google doc
     doc = requests.get(doc_url)
-    soup = BeautifulSoup(doc.text, 'html.parser')
 
-    #Get max_x and max_y to determine size of grid
-    max_x, max_y = 0, 0
+    '''
+    Pull table tag from the document to avoid reading in the whole document and wasting memory, and pass soup strainer in Beautiful Soup
+    constructor
+    ''' 
+    only_table_tag = SoupStrainer('table')
+    soup = BeautifulSoup(doc.text, 'html.parser', parse_only=only_table_tag)
 
-    for information in soup.find_all("span"):
-        print(information.string)
-    information = soup.find_all("span")
-    print(information[0] , "This is the first info found by find all")
+    '''Next, find all numbers in the table and create the coordinates'''
+    coordinates = []
+    characters = []
+    max_x, max_y, type = 0, 0, 0
+
+    for string in soup.strings:
+        if re.search('[0-9][0-9]*', string):
+            coordinates.append(int(string))
+        elif len(coordinates) > 0 and len(string) == 1:
+            characters.append(string)
+
+    print(coordinates)
+    print(characters)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 if __name__ == '__main__':

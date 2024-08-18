@@ -29,19 +29,37 @@ def decode(doc_url):
                 y_coordinates.append(int(string))
                 type = 0
         elif len(x_coordinates) > 0 and len(string) == 1:
-            characters.append(string)
+            characters.append(str(string))
 
-    #Find dimensions of grid by finding maxes(add 1 for zero index grid coordinates), and create 2d list to print the information
+    #Find dimensions of grid by finding maxes(add 1 for zero index grid coordinates) then making it a square matrix, and create 2d list to print the information
     max_x = max(x_coordinates) + 1
     max_y = max(y_coordinates) + 1
-    print(max_x, max_y)
+    if max_x > max_y:
+        max_y = max_x
+    else:
+        max_x = max_y
+    print(max_x,max_y)
 
-    secret_message = [None] * max_y
-    for i in range(max_y):
-        secret_message[i] = [None] * max_x
+    secret_message = [None] * max_x
+    for i in range(max_x):
+        secret_message[i] = [None] * max_y
     
-    for i in range(max_y):
-        print(secret_message[i])
+    #Insert characters, everything else is none
+    for x,y,c in zip(x_coordinates,y_coordinates,characters):
+        secret_message[x][y] = c
+    
+    #Out of range index, subtract by one
+    max_y -=1
+
+    #Print from top to bottom, no libraries used
+    while max_y >= 0:
+        for x in range(max_x):
+            if secret_message[x][max_y] == None:
+                print(end=' ')
+            else:
+                print(secret_message[x][max_y],end='')
+        print()
+        max_y -= 1
 
 
 
